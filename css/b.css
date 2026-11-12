@@ -164,6 +164,8 @@
 .reco.sm b{font-size:13px;font-weight:600}
 .reco.sm small{font-size:11px}
 @media (max-width:640px){.b5-syn{font-size:15px}.detail.b5 .pinfo{padding:18px}}
+/* 모바일·태블릿(≤900px): A안과 같은 1열 구성(2열로 깨지던 문제 수정) */
+@media (max-width:900px){.detail.b5{grid-template-columns:1fr}.detail.b5 .pinfo{align-items:flex-start}.detail.b5 .playbtn{min-width:0}}
 
 /* ───── B8 광고: 큰 파란 장바구니 CTA ───── */
 .ad-prem{bottom:calc(5% + max(64px,4.6em))}
