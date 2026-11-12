@@ -35,8 +35,8 @@
     const free = C.filter(App.isFree);
     const it = P.interests() || [];
     const lay = [];
+    lay.push({ kind: "tilebar", sec: "tilebar", events: ["승부예측 이벤트", "출석체크 이벤트"], items: App.data.passes.map((x) => x.id) });   // 이어보기 위: 이벤트 2개 + 패스 브랜드관 아이콘 줄
     lay.push({ kind: "continue", title: "이어보기", items: [{ id: "c104", ep: 3, progress: 0.45 }, { id: "c095", ep: 7, progress: 0.2 }] });
-    lay.push({ kind: "tilebar", sec: "tilebar", events: ["승부예측 이벤트", "출석체크 이벤트"], items: App.data.passes.map((x) => x.id) });   // 이벤트 2개 + 브랜드관 탭
     const chips = it.filter((g) => free.filter((c) => P.matches(c, g)).length);
     const liked = free.filter((c) => chips.some((g) => P.matches(c, g)));
     lay.push(liked.length >= 4
@@ -285,7 +285,7 @@
     const c = App.byId[cd.dataset.id]; curCard = cd;
     const wished = App.wish.has(c.id);
     const k = App.accessKind(c);
-    hv.innerHTML = `<div class="vid">${c.image ? `<img src="${esc(c.image)}" alt="">` : ""}<div class="lbl">${App.isNew(c) ? "신규" : ""}</div><button class="mute" aria-label="음소거">🔇</button></div>
+    hv.innerHTML = `<div class="vid">${c.image ? `<img src="${esc(c.image)}" alt="">` : ""}<div class="lbl"></div><button class="mute" aria-label="음소거">🔇</button></div>
       <div class="body"><h3>${esc(c.title)}</h3>
       <div class="mrow"><span>★ ${c.rating.toFixed(1)}</span><span>· ${esc(c.genres[0])}</span><span>· ${App.runtime(c.runtime)}</span><span class="age">${App.age(c.age)}</span></div>
       <div class="msg acc ${k}">${esc(App.accessLabel(c))}</div>

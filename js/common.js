@@ -90,7 +90,7 @@
     if (p) return `<span class="tag pass" style="background:${p.color}">${App.esc(p.name)}</span>`;
     if (c.badge === "쿠플 시리즈") return '<span class="tag">▶ 시리즈</span>';
     if (c.badge === "쿠플 영화") return '<span class="tag">▶ 영화</span>';
-    return App.isNew(c) ? '<span class="tag new">신규</span>' : "";
+    return "";                                              // '신규' 배지는 삭제(카드·미리보기 공통)
   };
   /* 지금 바로 재생 가능한가(멤버십 포함 & 패스 아님) = B안 메인 피드의 '무료 콘텐츠' */
   App.canPlay = (c) => c.access === "subscription" && !c.partnerPass;

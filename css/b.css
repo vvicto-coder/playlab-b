@@ -327,3 +327,14 @@
 @media (max-width:640px){.strip.tilebar{grid-auto-columns:23%}}
 .strip.tilebar .tile{font-size:15px;word-break:keep-all;overflow-wrap:normal;line-height:1.25}
 @media (max-width:640px){.strip.tilebar .tile{font-size:13px;padding:6px}}
+
+/* 이어보기 카드 높이 약 16% 키움(미디어 비율 16:9 → 16:10.44) */
+.cwb-media{aspect-ratio:16/10.44}
+/* 오직 PLAYLAB에서 큰 포스터: 세로형 2:3, 앱 화면 크기로 축소 — 모바일 폭 39%, 데스크톱 한 화면 8장 */
+.strip.origs{grid-auto-columns:calc((100% - 7 * 14px) / 8)}
+.card.big .thumb{aspect-ratio:2/3}
+.strip.origs .card.big .ctitle{font-size:clamp(12px,1vw,15px);bottom:24px}
+.strip.origs .card.big .tag{font-size:11px;padding:4px 8px}
+@media (max-width:1100px){.strip.origs{grid-auto-columns:calc((100% - 4 * 14px) / 5)}}
+@media (max-width:900px){.strip.origs{grid-auto-columns:calc((100% - 3 * 14px) / 4)}}
+@media (max-width:640px){.strip.origs{grid-auto-columns:39%;gap:12px}.strip.origs .card.big .ctitle{font-size:14px;bottom:26px}}
