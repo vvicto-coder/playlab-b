@@ -179,8 +179,12 @@
       }
       case "explore":
         return `<section class="sec"><h2>${esc(b.title)}</h2>${b.chips.length ? `<div class="ex-chips">${b.chips.map((g) => `<a href="search.html?g=${encodeURIComponent(g)}" data-explore="${esc(g)}">${esc(g)}</a>`).join("")}</div>` : ""}${strip("wide rowp", b.items.map((id) => card(App.byId[id], { section: sec })).join(""))}</section>`;
-      case "tilebar":                                        // 승부예측·출석체크 이벤트 + 브랜드관 탭 한 줄
-        return `<section class="sec">${strip("tiles tilebar", b.events.map((lb) => `<button class="tile event" data-type="event" data-target="" data-label="${esc(lb)}"><span>${esc(lb)}</span></button>`).join("") + b.items.map((id) => { const ps = App.pass(id); return `<a class="btile" href="brand.html?p=${id}" data-brand="${id}" style="--bc:${ps.color}"><span class="bw ${id}">${esc(ps.brand)}</span></a>`; }).join(""))}</section>`;
+      case "tilebar": {                                      // 이벤트 2개 + 패스 브랜드관 아이콘: 접속(새로고침)할 때마다 순서를 무작위로 섞음
+        const tiles = b.events.map((lb) => `<button class="tile event" data-type="event" data-target="" data-label="${esc(lb)}"><span>${esc(lb)}</span></button>`)
+          .concat(b.items.map((id) => { const ps = App.pass(id); return `<a class="btile" href="brand.html?p=${id}" data-brand="${id}" style="--bc:${ps.color}"><span class="bw ${id}">${esc(ps.brand)}</span></a>`; }));
+        for (let k = tiles.length - 1; k > 0; k--) { const r = Math.floor(Math.random() * (k + 1)); [tiles[k], tiles[r]] = [tiles[r], tiles[k]]; }
+        return `<section class="sec">${strip("tiles tilebar", tiles.join(""))}</section>`;
+      }
       case "shortcuts":                                      // 카테고리 탭(A와 같은 편성)
         return `<section class="sec">${strip("tiles", b.items.map((it) => {
           const c = it.type === "content" ? App.byId[it.target] : null;
