@@ -1340,16 +1340,16 @@
   },
   "c104": {
     "title": "강철 날개",
-    "query": "wing airplane",
-    "photo_title": "Lost",
-    "creator": "kevin dooley",
-    "license": "by",
-    "license_version": "2.0",
-    "license_url": "https://creativecommons.org/licenses/by/2.0/",
-    "landing_url": "https://www.flickr.com/photos/12836528@N00/14541391186",
-    "source_url": "https://live.staticflickr.com/2938/14541391186_bdd2533ace_b.jpg",
-    "provider": "flickr",
-    "attribution": "\"Lost\" by kevin dooley is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/."
+    "query": "jet aircraft flying blue sky",
+    "photo_title": "Modern jet flying blue sky",
+    "creator": "미상",
+    "license": "cc0",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landing_url": "https://www.rawpixel.com/image/6080456/f-wwff",
+    "source_url": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZmwyODUxNjYxMTcyMS1pbWFnZS1reWNqa3J2YS5qcGc.jpg",
+    "provider": "rawpixel",
+    "attribution": "\"Modern jet flying blue sky\" (rawpixel) is dedicated to the public domain under CC0 1.0. https://creativecommons.org/publicdomain/zero/1.0/"
   },
   "c105": {
     "title": "요리왕 미오",

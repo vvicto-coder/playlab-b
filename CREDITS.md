@@ -107,7 +107,7 @@
 | c101 | 숲속 친구들 | A boy and his teddy bear, about 1957 | M McBey | [BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [링크](https://www.flickr.com/photos/158652122@N02/51726095414) |
 | c102 | 공룡 탐험대 | Suchomimus tenerensis theropod dinosaur (Elrhaz Formation, Lower Cretaceous; Gadoufaoua, Tenere Desert, central Niger, northwest-central Africa) 1 | James St. John | [BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [링크](https://www.flickr.com/photos/47445767@N05/15414778865) |
 | c103 | 별빛 마법학교 | 關山星空Starry sky | Chipmunk LIN | [BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [링크](https://www.flickr.com/photos/130477966@N06/52225073960) |
-| c104 | 강철 날개 | Lost | kevin dooley | [BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [링크](https://www.flickr.com/photos/12836528@N00/14541391186) |
+| c104 | 강철 날개 | Modern jet flying blue sky | 미상 | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | [링크](https://www.rawpixel.com/image/6080456/f-wwff) |
 | c105 | 요리왕 미오 | ramen bowl | dalecruse | [BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [링크](https://www.flickr.com/photos/91873384@N04/54252651461) |
 | c106 | 구름 마을 이야기 | Prescott Ontario - Canada - Prescott Heritage Harbour - Full Luna | Onasill - Bill Badzo - OFF- VACATION | [PDM 1.0](https://creativecommons.org/publicdomain/mark/1.0/) | [링크](https://www.flickr.com/photos/7156765@N05/51509905514) |
 | c107 | 꼬마 탐정 모모 | Girl with a Magnifying Glass | SimonXIX | [BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [링크](https://www.flickr.com/photos/63517623@N08/52162972623) |
