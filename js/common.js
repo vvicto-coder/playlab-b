@@ -251,13 +251,13 @@
   };
 
   /* ───── 공통 상단 메뉴(GNB): 모든 페이지에서 한 곳에서 그린다 ───── */
-  const CHIPS = ["스포츠", "오직 PLAYLAB에서", "드라마·예능", "영화", "스토어", "키즈", "숏츠"];
+  const CHIPS = ["스포츠", "오직 PLAYLAB에서", "드라마·예능", "영화", "스토어", "키즈"];
   /* '모든 카테고리'(앱 화면 기준 21개, 2열 순서) — 맨 위 '오직 PLAYLAB에서'는 B1 전용으로 한 줄 전체 */
   const CATS = ["오직 PLAYLAB에서", "외국 영화", "드라마", "한국 영화", "영문 자막", "애니메이션", "키즈", "유럽 영화", "스릴러", "공포", "미국 영화",
     "액션", "다큐멘터리", "외국 TV 프로그램", "범죄", "가족", "코미디", "판타지", "중화권 영화", "로맨스", "어드벤처", "한국 TV 프로그램"];
   const BRANDS = [["키즈플러스", "#18b394"], ["애니 라운지", "#ff6a00"], ["MOA-X", "#e5484d"], ["STAR+", "#2f6bff"], ["SONYX", "#555"], ["J-WAVE", "#1e9e6a"]];
   const MENU = ["프로필 관리", "내 이용권", "내 구독내역", "구매내역", "할인쿠폰", "리뷰 관리", "의견 보내기", "로그아웃"];
-  const TAB_PAGE = { "스포츠": "sports-benefits.html", "드라마·예능": "tv.html", "영화": "movies.html", "스토어": "store.html", "키즈": "kids.html", "오직 PLAYLAB에서": "originals.html", "숏츠": "shorts.html" };
+  const TAB_PAGE = { "스포츠": "sports-benefits.html", "드라마·예능": "tv.html", "영화": "movies.html", "스토어": "store.html", "키즈": "kids.html", "오직 PLAYLAB에서": "originals.html" };
 
   /* 스포츠 탭: 실제 사이트처럼 가입 전에는 스포츠 패스 소개 페이지가 먼저(‘일주일 동안 그만 보기’ 또는 이미 닫았으면 메인) */
   App.sportsDest = () => (LS.get("sports_intro_skip_until", 0) > Date.now() || SS.get("sports_intro_seen") ? "sports.html" : "sports-benefits.html");
@@ -268,7 +268,7 @@
     const active = g.dataset.active || "";
     g.innerHTML = `<a class="logo" href="index.html" aria-label="PLAYLAB 홈"><i></i>PLAYLAB</a>
       <nav class="chips" aria-label="카테고리">${CHIPS.map((c) => {
-        const cls = (c === active ? "chip on fill" : c === "스포츠" ? "chip strong" : "chip") + (c === "오직 PLAYLAB에서" ? " orig" : c === "숏츠" ? " shorts" : "");
+        const cls = (c === active ? "chip on fill" : c === "스포츠" ? "chip strong" : "chip") + (c === "오직 PLAYLAB에서" ? " orig" : "");
         return `<button class="${cls}" data-chip="${c}" ${c === active ? 'aria-current="page"' : ""}>${c.replace("·", " · ")}</button>`;
       }).join("")}</nav>
       <div class="right">
@@ -297,8 +297,7 @@
       }
       const chip = e.target.closest("[data-chip]");
       if (chip) {
-        if (chip.dataset.chip === "숏츠") Logger.log("shorts_tab_click", { value: "gnb" });
-        else Logger.log("gnb_click", { value: chip.dataset.chip });
+        Logger.log("gnb_click", { value: chip.dataset.chip });
         if (chip.dataset.chip === "오직 PLAYLAB에서") Logger.log("category_entry_click", { value: "originals", section: "gnb" });
         const dest = chip.dataset.chip === "스포츠" ? App.sportsDest() : TAB_PAGE[chip.dataset.chip];
         const here = location.pathname.split("/").pop();

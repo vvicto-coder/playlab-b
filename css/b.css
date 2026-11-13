@@ -6,7 +6,6 @@
 .catgrid{grid-template-columns:repeat(2,1fr);max-height:none}
 .catgrid button[data-cat-item="오직 PLAYLAB에서"]{grid-column:1/-1;font-weight:800;color:#5b3df5;border-bottom:1px solid #eceef2;border-radius:8px 8px 0 0;margin-bottom:4px}
 .catpanel{width:min(460px,92vw)}
-@media (max-width:640px){.chip.shorts{display:none}}   /* 모바일은 하단 탭바 '숏플' 유지 */
 
 /* ───── B3 카드 배지 1개 ───── */
 .tag.new{background:#e5484d}

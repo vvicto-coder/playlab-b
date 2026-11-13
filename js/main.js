@@ -60,7 +60,14 @@
     const similar = !seed ? [] : free.filter((c) => c.id !== seed.id && c.genres.some((g) => seed.genres.includes(g)));
     lay.push({ kind: "row", sec: played ? "personal_seen" : wished ? "personal_wish" : "personal_seen", title: seed ? `${seed.title}${josa(seed.title, "을", "를")} ${how}` : "", items: ids(P.rank(similar)) });
     lay.push({ kind: "top", sec: "top10", title: "지금 많이 보는 TOP 10", items: A.layout.find((x) => x.kind === "top20").items.filter((id) => App.isFree(App.byId[id])).slice(0, 10) });
-    lay.push({ kind: "promo", id: "promo_orig", title: "오직 PLAYLAB에서만 볼 수 있는 이야기", sub: "PLAYLAB 시리즈 · 영화 전체 보기 ›", hue: 250, href: "originals.html" });
+    /* 홍보 배너 자리: 접속할 때마다 [오직 PLAYLAB 배너 + 브랜드관 홍보 배너 6종] 중 하나를 무작위로 노출 */
+    const BRAND_BANNER = {
+      lounge: "차원이 다른 덕질의 시작", star: "스타들의 신작, 가장 먼저 만나요", sonyx: "거장의 걸작을 내 거실에서",
+      moa: "한 번 시작하면 멈출 수 없는 몰입", jwave: "지금 가장 뜨거운 J-콘텐츠", kidsplus: "아이와 함께 자라는 이야기",
+    };
+    const banners = [{ kind: "promo", id: "promo_orig", title: "오직 PLAYLAB에서만 볼 수 있는 이야기", sub: "PLAYLAB 시리즈 · 영화 전체 보기 ›", hue: 250, href: "originals.html" }]
+      .concat(App.data.passes.map((ps) => ({ kind: "promo", id: "promo_brand_" + ps.id, title: BRAND_BANNER[ps.id] || ps.tagline, sub: `${ps.brand} 둘러보기`, pass: ps.id, bg: `linear-gradient(100deg, ${ps.color}, color-mix(in srgb, ${ps.color} 55%, #000))` })));
+    lay.push(banners[Math.floor(Math.random() * banners.length)]);
     lay.push({ kind: "row", sec: "new", title: "새로 올라온 콘텐츠", items: ids(P.rank(free.filter(App.isNew))) });
     lay.push({ kind: "row", sec: "free_docu", title: "세상이 궁금해질 때", items: ids(P.rank(free.filter((c) => c.type === "다큐멘터리"))) });
     lay.push({ kind: "row", sec: "free_anime", title: "온 가족이 함께", items: ids(P.rank(free.filter((c) => c.type === "애니메이션"))) });
@@ -189,7 +196,7 @@
       case "promo": {
         const t = b.target && App.byId[b.target];
         if (b.adult) return `<section class="sec"><div class="promo adult" data-promo="${b.id}" role="button" tabindex="0"><b>${esc(b.title)}</b><span>${esc(b.sub)}</span></div></section>`;
-        return `<section class="sec"><div class="promo" data-promo="${b.id}" ${t ? `data-target="${t.id}"` : ""} ${b.href ? `data-href="${b.href}"` : ""} ${b.pass ? `data-pass="${b.pass}"` : ""} style="--h:${b.hue != null ? b.hue : App.hue(b.id)}" role="link" tabindex="0"><b>${esc(b.title)}</b><span>${esc(b.sub)}</span></div></section>`;
+        return `<section class="sec"><div class="promo" data-promo="${b.id}" ${t ? `data-target="${t.id}"` : ""} ${b.href ? `data-href="${b.href}"` : ""} ${b.pass ? `data-pass="${b.pass}"` : ""} style="--h:${b.hue != null ? b.hue : App.hue(b.id)}${b.bg ? `;background:${b.bg}` : ""}" role="link" tabindex="0"><b>${esc(b.title)}</b><span>${esc(b.sub)}</span></div></section>`;
       }
       case "explore":
         return `<section class="sec"><h2>${esc(b.title)}</h2>${b.chips.length ? `<div class="ex-chips">${b.chips.map((g) => `<a href="search.html?g=${encodeURIComponent(g)}" data-explore="${esc(g)}">${esc(g)}</a>`).join("")}</div>` : ""}${strip("wide rowp", b.items.map((id) => card(App.byId[id], { section: sec })).join(""))}</section>`;
