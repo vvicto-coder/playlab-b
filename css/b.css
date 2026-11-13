@@ -323,10 +323,10 @@
 .pf-passes .pi-more{margin-left:4px;font-size:14px;font-weight:700;color:var(--primary)}
 
 /* 홈: 승부예측·출석체크 이벤트 + 브랜드관 탭 한 줄(정사각형 타일) */
-.strip.tilebar{gap:10px;grid-auto-columns:calc((100% - 7 * 10px) / 8)}
+.strip.tilebar{gap:12px;grid-auto-columns:calc((100% - 9 * 12px) / 10)}            /* A안(playlab-a-main) 기준: 데스크톱 10개 */
 .strip.tilebar .tile{aspect-ratio:1/1}
-@media (max-width:900px){.strip.tilebar{grid-auto-columns:calc((100% - 3 * 10px) / 4)}}
-@media (max-width:640px){.strip.tilebar{grid-auto-columns:23%}}
+@media (max-width:900px){.strip.tilebar{grid-auto-columns:calc((100% - 3 * 12px) / 4)}}  /* 641~900px 4개 */
+@media (max-width:640px){.strip.tilebar{grid-auto-columns:21%}}                          /* 모바일 21% */
 .strip.tilebar .tile{font-size:15px;word-break:keep-all;overflow-wrap:normal;line-height:1.25}
 @media (max-width:640px){.strip.tilebar .tile{font-size:13px;padding:6px}}
 
@@ -340,3 +340,17 @@
 @media (max-width:1100px){.strip.origs{grid-auto-columns:calc((100% - 4 * 14px) / 5)}}
 @media (max-width:900px){.strip.origs{grid-auto-columns:calc((100% - 3 * 14px) / 4)}}
 @media (max-width:640px){.strip.origs{grid-auto-columns:39%;gap:12px}.strip.origs .card.big .ctitle{font-size:14px;bottom:26px}}
+
+/* 홈 '오직 PLAYLAB에서': 다크 네이비 배경 · 제목 Bold 800 · PLAYLAB ORIGINAL 라벨 */
+.originals.orig-navy{background:#0a1a3a;color:#fff;border-radius:18px;padding:16px 16px 18px;margin-top:22px}
+.originals.orig-navy h2,.originals.orig-navy h2 a{color:#fff;font-weight:800}
+.originals.orig-navy .orig-glow::before{display:none}
+.orig-label{display:inline-block;margin-bottom:6px;padding:3px 10px;border-radius:999px;background:rgba(122,92,255,.28);border:1px solid rgba(160,190,255,.5);color:#bcd4ff;font-size:11px;font-weight:800;letter-spacing:.14em}
+/* 홈 브랜드관 둘러보기 카드(무작위 1개): 데스크톱은 가로형으로 compact */
+@media (min-width:901px){
+  .brandcard{display:grid;grid-template-columns:1fr auto;grid-template-areas:"n m" "t m" "g m";align-content:center;align-items:center;column-gap:32px;padding:22px 32px}
+  .brandcard .bw2{grid-area:n;align-self:end}
+  .brandcard small{grid-area:t;margin:6px 0 0;align-self:start}
+  .brandcard .go{grid-area:g;justify-self:start;margin-top:16px;padding:11px 36px;font-size:15px}
+  .brandcard .mini{grid-area:m;grid-template-columns:repeat(4,104px);gap:10px;margin:0}
+}

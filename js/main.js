@@ -25,7 +25,10 @@
   const ORIGS = A.layout.find((b) => b.kind === "originals").items.map((id) => App.byId[id]);
   const ORIG_FREE = ORIGS.filter(App.isFree);                  // PLAYLAB 시리즈·영화(멤버십 포함)
   const ORIG_PASS = ORIGS.filter((c) => c.partnerPass);        // 오직 PLAYLAB에서 중 패스가 필요한 작품 → 패스별로 분리
-  const passGroups = () => App.data.passes.map((p) => ({ p, items: P.rank(ORIG_PASS.filter((c) => c.partnerPass === p.id)) })).filter((g) => g.items.length);
+  const ALL_PASS = C.filter((c) => c.partnerPass);             // 브랜드관 작품 전체(6종 54편, 모두 패스 구독 필요)
+  const passGroups = () => App.data.passes.map((p) => ({ p, items: P.rank(ALL_PASS.filter((c) => c.partnerPass === p.id)) })).filter((g) => g.items.length);
+  /* 받침 유무에 따라 조사 자동 선택: josa("강철 날개", "을", "를") */
+  const josa = (w, a, b2) => { const ch = String(w).trim().slice(-1), code = ch.charCodeAt(0); return code >= 0xac00 && code <= 0xd7a3 ? ((code - 0xac00) % 28 ? a : b2) : b2; };
 
   /* ───── 편성 ───── */
   const ids = (list, n) => list.slice(0, n || 12).map((c) => c.id);
@@ -36,26 +39,32 @@
     const it = P.interests() || [];
     const lay = [];
     lay.push({ kind: "tilebar", sec: "tilebar", events: ["승부예측 이벤트", "출석체크 이벤트"], items: App.data.passes.map((x) => x.id) });   // 이어보기 위: 이벤트 2개 + 패스 브랜드관 아이콘 줄
-    lay.push({ kind: "continue", title: "이어보기", items: [{ id: "c104", ep: 3, progress: 0.45 }, { id: "c095", ep: 7, progress: 0.2 }] });
+    const bh0 = P.behav();     // 이어보기: 고정 데이터 대신 실제 재생 기록(없으면 줄 숨김)
+    lay.push({ kind: "continue", title: "이어보기", items: (bh0.play || []).filter((id) => App.byId[id]).slice(0, 6).map((id) => ({ id, ep: (bh0.ep || {})[id] || 1 })) });
     const chips = it.filter((g) => free.filter((c) => P.matches(c, g)).length);
     const liked = free.filter((c) => chips.some((g) => P.matches(c, g)));
     lay.push(liked.length >= 4
       ? { kind: "row", sec: "personal_interest", title: `회원님이 좋아할 만한 ${chips.join(" · ")}`, items: ids(P.rank(liked)) }
       : { kind: "row", sec: "personal_interest", title: "회원님이 좋아할 만한 콘텐츠", items: ids(P.rank(free)) });
     lay.push({ kind: "originals", sec: "originals", title: "오직 PLAYLAB에서", items: ids(P.rank(ORIG_FREE)), more: "originals.html" });
-    lay.push({ kind: "row", sec: "originals_pass", title: "패스로 보는 오직 PLAYLAB에서", items: passGroups().flatMap((g) => g.items).map((c) => c.id), more: "originals.html#pass" });
-    const wished = App.wish.list().slice().reverse().map((id) => App.byId[id]).filter((c) => c && App.homeEligible(c))[0];
+    const deep = P.rank(free.filter((c) => c.format === "series")).concat(P.rank(free.filter((c) => c.format !== "series")));   // 몰입하기 좋은 시리즈 우선(멤버십 포함 작품만, 패스 작품 제외)
+    lay.push({ kind: "row", sec: "deep_dive", title: "더 깊이 빠져들고 싶을 때", items: ids(deep, 10) });
+    lay.push({ kind: "brandcard", sec: "brandcard", pass: App.data.passes[Math.floor(Math.random() * App.data.passes.length)].id });   // 브랜드관 둘러보기(무작위 1개)
+    /* ~을/를 보셨다면: 마지막으로 시청한 작품 → (없으면) 찜한 작품 → 클릭한 작품 → 이어보기 작품 순으로 기준 작품을 잡고, 같은 카테고리(장르가 겹치는) 무료 작품만 보여준다 */
     const b = P.behav();
-    const seed = wished || lastOf((b.play || []).concat(b.click || []).filter((id) => App.byId[id] && App.homeEligible(App.byId[id]))) || App.byId.c104;
-    const similar = free.filter((c) => c.id !== seed.id && c.genres.some((g) => seed.genres.includes(g)));
-    const fill = P.rank(free.filter((c) => c.id !== seed.id && !similar.includes(c)));
-    lay.push({ kind: "row", sec: wished ? "personal_wish" : "personal_seen", title: `${seed.title}을(를) ${wished ? "찜했다면" : "보셨다면"}`, items: ids(P.rank(similar).concat(fill)) });
+    const okIds = (arr) => (arr || []).filter((id) => App.byId[id] && App.homeEligible(App.byId[id]));
+    const wished = App.wish.list().slice().reverse().map((id) => App.byId[id]).filter((c) => c && App.homeEligible(c))[0];
+    const played = lastOf(okIds(b.play)), clicked = lastOf(okIds(b.click));
+    const seed = played || wished || clicked;           // 기록이 없으면 줄을 만들지 않음
+    const how = played ? "보셨다면" : wished ? "찜했다면" : clicked ? "보셨다면" : "보셨다면";
+    const similar = !seed ? [] : free.filter((c) => c.id !== seed.id && c.genres.some((g) => seed.genres.includes(g)));
+    lay.push({ kind: "row", sec: played ? "personal_seen" : wished ? "personal_wish" : "personal_seen", title: seed ? `${seed.title}${josa(seed.title, "을", "를")} ${how}` : "", items: ids(P.rank(similar)) });
     lay.push({ kind: "top", sec: "top10", title: "지금 많이 보는 TOP 10", items: A.layout.find((x) => x.kind === "top20").items.filter((id) => App.isFree(App.byId[id])).slice(0, 10) });
     lay.push({ kind: "promo", id: "promo_orig", title: "오직 PLAYLAB에서만 볼 수 있는 이야기", sub: "PLAYLAB 시리즈 · 영화 전체 보기 ›", hue: 250, href: "originals.html" });
     lay.push({ kind: "row", sec: "new", title: "새로 올라온 콘텐츠", items: ids(P.rank(free.filter(App.isNew))) });
-    lay.push({ kind: "row", sec: "free_docu", title: "무료로 보는 다큐멘터리 · 시사교양", items: ids(P.rank(free.filter((c) => c.type === "다큐멘터리"))) });
-    lay.push({ kind: "row", sec: "free_anime", title: "무료로 보는 애니메이션 · 키즈", items: ids(P.rank(free.filter((c) => c.type === "애니메이션"))) });
-    lay.push({ kind: "row", sec: "free_drama", title: "무료로 보는 드라마 · 영화", items: ids(P.rank(free.filter((c) => c.type === "드라마" || c.type === "영화"))) });
+    lay.push({ kind: "row", sec: "free_docu", title: "세상이 궁금해질 때", items: ids(P.rank(free.filter((c) => c.type === "다큐멘터리"))) });
+    lay.push({ kind: "row", sec: "free_anime", title: "온 가족이 함께", items: ids(P.rank(free.filter((c) => c.type === "애니메이션"))) });
+    lay.push({ kind: "row", sec: "free_drama", title: "오늘도 출근하는 당신에게", items: ids(P.rank(free.filter((c) => c.type === "드라마" || c.type === "영화"))) });
     const others = P.CHIPS.filter((g) => !it.includes(g) && free.some((c) => P.matches(c, g)));
     const explore = it.length ? free.filter((c) => !it.some((g) => P.matches(c, g))) : free;
     lay.push({ kind: "explore", sec: "personal_explore", title: "다른 관심사도 둘러보기", chips: others.slice(0, 8), items: ids(explore.slice().sort((a, z) => z.rating - a.rating || a.id.localeCompare(z.id))) });
@@ -154,17 +163,22 @@
     switch (b.kind) {
       case "continue":                                       // B5 이어보기: 홈 최상단 큰 카드(회차·남은 시간·진행률·버튼)
         return `<section class="sec cwb-sec"><h2>${esc(b.title)}</h2><div class="cwb">${b.items.map((it) => {
-          const c = App.byId[it.id], left = Math.max(1, Math.round(c.runtime * (1 - it.progress)));
+          const c = App.byId[it.id], hasP = it.progress != null, left = hasP ? Math.max(1, Math.round(c.runtime * (1 - it.progress))) : 0;
           return `<article class="cwb-card" data-id="${c.id}"><a class="cwb-media" href="detail.html?id=${c.id}&ep=${it.ep}&play=1" data-continue="${c.id}" data-ep="${it.ep}" aria-label="${esc(c.title)} ${it.ep}화 이어보기">
-              ${c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy">` : ""}<span class="cwb-play">▶</span><span class="cwb-bar"><i style="width:${Math.round(it.progress * 100)}%"></i></span></a>
-            <div class="cwb-info"><h3>${esc(c.title)}</h3><p>${c.format === "movie" ? "본편" : `${it.ep}화`} · 남은 시간 ${App.runtime(left)} · ${Math.round(it.progress * 100)}% 시청</p>
+              ${c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy">` : ""}<span class="cwb-play">▶</span>${hasP ? `<span class="cwb-bar"><i style="width:${Math.round(it.progress * 100)}%"></i></span>` : ""}</a>
+            <div class="cwb-info"><h3>${esc(c.title)}</h3><p>${c.format === "movie" ? "본편" : `${it.ep}화`} · ${hasP ? `남은 시간 ${App.runtime(left)} · ${Math.round(it.progress * 100)}% 시청` : "이어서 시청해요"}</p>
               <a class="btn primary cwb-btn" href="detail.html?id=${c.id}&ep=${it.ep}&play=1" data-continue="${c.id}" data-ep="${it.ep}">▶ 이어보기</a></div></article>`;
         }).join("")}</div></section>`;
       case "top":
       case "top20":
         return `<section class="sec"><h2>${esc(b.title)}</h2>${strip("poster", b.items.map((id, i) => card(App.byId[id], { section: sec, kind: "poster", rank: i + 1 })).join(""))}</section>`;
       case "originals":
-        return `<section class="sec originals">${h2(b)}<div class="orig-glow">${strip("origs", b.items.map((id) => card(App.byId[id], { section: sec, kind: "big" })).join(""))}</div></section>`;
+        return `<section class="sec originals${sec === "originals" ? " orig-navy" : ""}">${sec === "originals" ? '<span class="orig-label">PLAYLAB ORIGINAL</span>' : ""}${h2(b)}<div class="orig-glow">${strip("origs", b.items.map((id) => card(App.byId[id], { section: sec, kind: "big" })).join(""))}</div></section>`;
+      case "brandcard": {                                    // 브랜드관 둘러보기 카드(접속할 때마다 무작위 1개)
+        const ps = App.pass(b.pass); const its = ALL_PASS.filter((c) => c.partnerPass === b.pass).sort((a, z) => z.rating - a.rating).slice(0, 4);
+        return `<section class="sec"><a class="brandcard" href="brand.html?p=${b.pass}" data-brand="${b.pass}" style="--bc:${ps.color}"><span class="bw2 ${b.pass}">${esc(ps.brand)}</span><small>${esc(ps.tagline)}</small>
+          <span class="mini">${its.map((c) => `<span class="mp" style="--h:${App.hue(c.id)}">${c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy">` : ""}</span>`).join("")}</span><span class="go">둘러보기</span></a></section>`;
+      }
       case "passOrig": {                                     // 오직 PLAYLAB에서 탭: 패스 종류별 분리
         const p = b.pass;
         return `${b.first ? '<h2 class="po-head sec" id="pass">패스로 보는 오직 PLAYLAB에서 <small>멤버십과 별도로 패스 구독이 필요해요</small></h2>' : ""}
@@ -242,6 +256,8 @@
     if (ex) { L.log("shortcut_click", { value: ex.dataset.explore, section: "personal_explore" }); return; }
     const cd = e.target.closest(".card");
     if (cd) { L.log("card_click", { target_id: cd.dataset.id, section: cd.dataset.section }); return; }
+    const bcd = e.target.closest(".brandcard");
+    if (bcd) { L.log("pass_icon_click", { value: bcd.dataset.brand, section: "home_brandcard" }); return; }
     const bt = e.target.closest(".btile");
     if (bt) { L.log("pass_icon_click", { value: bt.dataset.brand, section: "home_brands" }); return; }
     const t = e.target.closest(".tile");

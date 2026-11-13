@@ -32,6 +32,7 @@
       if (row.target_id && /^c\d+$/.test(row.target_id) && (event === "card_click" || event === "play_start")) {   // B3 개인화: 최근 클릭·재생 작품
         const k = event === "play_start" ? "play" : "click", b = LS.get("behav_B", { click: [], play: [] });
         b[k] = [row.target_id].concat((b[k] || []).filter((x) => x !== row.target_id)).slice(0, 20);
+        if (event === "play_start" && row.value) { b.ep = b.ep || {}; b.ep[row.target_id] = row.value; }
         LS.set("behav_B", b);
       }
       const all = LS.get("ablog_B", []);
@@ -127,9 +128,10 @@
     const f = document.createElement("footer");
     f.className = "site-footer";
     f.innerHTML = `<p>© 2026 교육용 UI/UX A/B 테스트 프로젝트 · 비영리 · 실제 서비스와 무관 · 모든 콘텐츠는 가상입니다.</p>
-      <p>이미지 출처: Openverse(CC0·공공 도메인·CC BY) — <a href="credits.html">출처 보기</a> · <a href="#" id="dl-log">행동 로그(CSV) 내보내기</a> · <a href="#" id="clear-log">로그 초기화</a></p>`;
+      <p>이미지 출처: Openverse(CC0·공공 도메인·CC BY) — <a href="credits.html">출처 보기</a> · <a href="#" id="dl-log">행동 로그(CSV) 내보내기</a> · <a href="#" id="clear-log">로그 초기화</a> · <a href="#" id="clear-watch">시청 기록 초기화</a></p>`;
     document.body.appendChild(f);
     f.querySelector("#dl-log").addEventListener("click", (e) => { e.preventDefault(); Logger.download(); });
+    f.querySelector("#clear-watch").addEventListener("click", (e) => { e.preventDefault(); LS.set("behav_B", { click: [], play: [] }); App.toast("시청 기록을 초기화했어요"); setTimeout(() => location.reload(), 600); });
     f.querySelector("#clear-log").addEventListener("click", (e) => { e.preventDefault(); Logger.clear(); App.toast("로그를 초기화했어요"); });
 
     if (!LS.get("consent_B", false)) App.showConsent();
